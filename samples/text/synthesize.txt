@@ -1,0 +1,3 @@
+so that these arrangements can be made permanent without adversely affecting the operations of the Services field offices.
+Based on its experience during this period, the Secret Service now recommends that additional personnel be made available to PRS.
+To install precompiled package of eSpeak NG on Linux, use standard package manager of your distribution.

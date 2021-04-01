@@ -1,0 +1,74 @@
+data:
+  datasets_path: './datasets'
+  dataset: 'mbspeech'
+  dataset_dir: 'MBSpeech-1.0'
+text:
+  graphemes: &gs !!python/object/apply:eval ['list("абвгдеёжзийклмноөпрстуүфхцчшъыьэюя")']
+  phonemes: &ps !!python/object/apply:eval ['["X"] * 70']
+  specials: &sp !!python/object/apply:eval ['["<pad>", "<unk>"]']
+  punctuations: &pt !!python/object/apply:eval ['[".", ",", "?", "!", " ", "-"]']
+  units_list: &ul !!python/object/apply:eval ['us+sp+pt', {'us': *gs, 'sp': *sp, 'pt': *pt}]
+  use_phonemes: &up false
+audio:
+  n_mel_channels: &nm 80
+  filter_length: 1024
+  hop_length: 256  # WARNING: this can't be changed.
+  win_length: 1024
+  sampling_rate: &sr 22050
+  segment_length: *sr
+  pad_short: 2000
+  mel_fmin: 0.0
+  mel_fmax: 8000.0
+  # Precomputed statistics for log-mel-spectrs for speech dataset
+  spec_mean: -5.522  # for LJSpeech dataset
+  spec_std: 2.063  # for LJSpeech dataset
+  spec_min: -11.5129  # for LJSpeech dataset
+  spec_max: 2.0584  # for LJSpeech dataset
+  # Others
+  normalize: false
+  reduction_rate: 4
+parallel:
+  ground_truth: false
+  out_channels: *nm  # equal to ${audio.n_mel_channels}
+  alphabet_size: !!python/object/apply:eval ['len(ul)', {'ul': *ul}]
+  channels: 128
+  enc_kernel_size: 4
+  dec_kernel_size: 4
+  enc_dilations: !!python/object/apply:eval ['4 * [1,2,4]   + [1]']  # receptive field is max 15
+  dec_dilations: !!python/object/apply:eval ['4 * [1,2,4,8] + [1]']  # receptive field is max 32
+  normalize: FreqNorm  # 'freq', 'layer', 'batch'
+  activation: torch.nn.ReLU  # 'relu', 'linear', 'sigmoid'
+  final_activation: torch.nn.Identity
+  pos_mode: 'duration'  # 'standard', 'duration'
+  interpolate: false  # true
+  separate_duration_grad: true
+  speaker_dim: 128  # speaker embedding dim
+duration:
+  out_channels: *nm  # equal to ${audio.n_mel_channels}
+  alphabet_size: !!python/object/apply:eval ['len(ul)', {'ul': *ul}]
+  channels: 40
+  hidden_channels: 80
+  kernel_size: 3
+  text_enc_dilations: !!python/object/apply:eval ['2 * [1,3,9,27] + [1,1]']
+  spec_enc_dilations: !!python/object/apply:eval ['2 * [1,3,9,27] + [1,1]']
+  spec_dec_dilations: !!python/object/apply:eval ['2 * [1,3,9,27] + [1,1]']
+  normalize: torch.nn.Linear  # 'layer'  # 'freq', 'layer', 'batch'
+  activation: torch.nn.ReLU  # 'relu', 'linear', 'sigmoid'
+  final_activation: torch.nn.Sigmoid
+  att_noise: 0.1
+  att_hidden_channels: 80
+  pos_mode: 'duration'  # 'standard', 'duration'
+  # Spectrogram augmentation options
+  enable_augment: true
+  noise: 0.01  # 1. add normal noise to input spectrs
+  feed_repeat: 2  # 2. Feed spectrograms through the model `feed_repeat` times, use degraded output on input for training
+  feed_ratio: 0.5  # how many items in batch are degraded
+  replace_ratio: 0.1  # 3. Replace random spectrogram frames with random noise
+melgan:
+  checkpoint: 'melgan-epoch3200.pth'
+trainer:
+  disable_progress_bar: false
+  logdir: './logdir'
+synthesizer:
+  inputs_file_path: './samples/text/synthesize-mb.txt'
+  outputs_dir: './samples/audio'
