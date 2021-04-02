@@ -67,6 +67,29 @@ class ResidualBlock(nn.Module):
         return x + self.blocks(x)
 
 
+class GatedConvBlock(nn.Module):
+    """Implements conv->PReLU->norm n_1-times->GLU"""
+
+    def __init__(self, channels, kernel_size, dilation,  n=2, norm=FreqNorm, activation=nn.ReLU, causal=True):
+        super(ResidualBlock, self).__init__()
+
+        self.blocks = [
+            nn.Sequential(
+                Conv1d(channels, channels, kernel_size, dilation=dilation),
+                ZeroTemporalPad(kernel_size, dilation, causal),
+                activation(),
+                norm(channels),  # Normalize after activation. if we used ReLU, half of our neurons would be dead!
+            )
+            for i in range(n-1)
+        ]
+        self.blocks.extend([nn.GLU(dim=1)])
+
+        self.blocks = nn.Sequential(*self.blocks)
+
+    def forward(self, x):
+        return x + self.blocks(x)
+
+
 class ScaledDotAttention(nn.Module):
 
     def __init__(self, in_channels, hidden_channels, out_channels, noise=0, normalize=False, dropout=False):

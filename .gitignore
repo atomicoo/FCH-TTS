@@ -1,9 +1,14 @@
 # Projects
-datasets/*Speech*/
-voienc/
-logdir/
-wandb/
 .vscode/
+datasets/*Speech*
+logdir/
+outputs/
+voienc/
+wandb/
+
+# Git
+.git/
+.gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

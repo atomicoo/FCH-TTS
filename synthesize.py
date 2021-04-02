@@ -58,10 +58,13 @@ if __name__ == '__main__':
         device=device
     )
 
+    print('Synthesizing...')
+    since = time.time()
     text_file = args.input_texts or hparams.synthesizer.inputs_file_path
     with open(text_file, 'r', encoding='utf-8') as fr:
         texts = fr.read().strip().split('\n')
     melspecs = synthesizer.inference(texts)
+    print(f"Inference {len(texts)} spectrograms, total elapsed {time.time()-since:.3f}s. Done.")
 
     vocoder = Generator(hparams.audio.n_mel_channels).to(device)
     vocoder.eval(inference=True)
@@ -70,11 +73,16 @@ if __name__ == '__main__':
     vocoder.load_state_dict(torch.load(vocoder_checkpoint, map_location=device))
 
     waves = vocoder(melspecs).squeeze(1)
+    print(f"Generate {len(texts)} audios, total elapsed {time.time()-since:.3f}s. Done.")
 
+    print('Saving audio...')
     outputs_dir = args.outputs_dir or hparams.synthesizer.outputs_dir
     os.makedirs(outputs_dir, exist_ok=True)
     for i, wav in enumerate(waves, start=1):
         wav = wav.cpu().detach().numpy()
         filename = osp.join(outputs_dir, f"{time.strftime('%Y-%m-%d')}_{i:03d}.wav")
         write(filename, hparams.audio.sampling_rate, wav)
+    print(f"Audios saved to {outputs_dir}. Done.")
+
+    print(f'Done. ({time.time()-since:.3f}s)')
     

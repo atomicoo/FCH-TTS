@@ -70,5 +70,5 @@ trainer:
   disable_progress_bar: false
   logdir: './logdir'
 synthesizer:
-  inputs_file_path: './samples/text/synthesize.txt'
-  outputs_dir: './samples/audio'
+  inputs_file_path: './outputs/text/synthesize.txt'
+  outputs_dir: './outputs/audio'

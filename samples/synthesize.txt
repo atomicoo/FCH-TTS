@@ -1,0 +1,5 @@
+The complexity of modern TTS designs thus leads to substantial engineering efforts when building a new system.
+To install precompiled package of eSpeak NG on Linux, use standard package manager of your distribution.
+A text-to-speech synthesis system typically consists of multiple stages, such as a text analysis frontend, an acoustic model and an audio synthesis module.
+These components are based on extensive domain expertise and are laborious to design. 
+Building these components often requires extensive domain expertise and may contain brittle design choices.

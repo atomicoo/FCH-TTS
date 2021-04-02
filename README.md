@@ -6,27 +6,26 @@
 
 ```
 .
-|--- config    # 配置文件
+|--- config/      # 配置文件
      |--- default.yaml
      |--- ...
-|--- datasets  # 数据处理
-|--- helpers   # 一些辅助类
+|--- datasets/    # 数据处理
+|--- helpers/     # 一些辅助类
      |--- trainer.py
      |--- synthesizer.py
      |--- ...
-|--- logdir    # 训练过程保存目录
-|--- losses    # 一些损失函数
-|--- melgan    # 声码器
+|--- logdir/      # 训练过程保存目录
+|--- losses/      # 一些损失函数
+|--- melgan/      # 声码器
      |--- generator.py
      |--- ...
-|--- models    # 合成模型
+|--- models/      # 合成模型
      |--- layers.py
      |--- duration.py
      |--- parallel.py
-|--- samples   # 合成样例
-     |--- audio
-     |--- text
-|--- utils     # 一些通用方法
+|--- pretrained/  # 预训练模型（LJSpeech 数据集）
+|--- samples/     # 合成样例
+|--- utils/       # 一些通用方法
 |--- LICENSE
 |--- prepare-dataset.py  # 准备脚本
 |--- extract-duration.py
@@ -39,11 +38,11 @@
 
 ## 合成样例
 
-部分合成样例见[这里](https://github.com/atomicoo/ParallelTTS/tree/main/samples/audio)。
+部分合成样例见[这里](https://github.com/atomicoo/ParallelTTS/tree/main/samples/)。
 
 ## 预训练
 
-部分预训练模型见[这里](https://github.com/atomicoo/ParallelTTS/tree/main/logdir)。
+部分预训练模型见[这里](https://github.com/atomicoo/ParallelTTS/tree/main/pretrained/)。
 
 ## 快速开始
 
@@ -97,5 +96,5 @@ $ python extract-duration.py
 $ python train-parallel.py
 ```
 
-通过 `--ground_truth` 可以指定是否使用 Ground-Truth 声谱图进行训练。
+通过 `--ground_truth` 可以指定是否使用 Ground-Truth 声谱图进行模型训练。
 
