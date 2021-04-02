@@ -21,9 +21,11 @@ from utils.utils import get_last_chkpt_path
 from datasets.data_loader import Text2MelDataLoader
 from datasets.dataset import SpeechDataset
 from utils.transform import MinMaxNorm, StandardNorm
+from utils.functional import mask
 
 from models import DurationExtractor, ParallelText2Mel
 from losses import l1_masked, guided_att, masked_huber, masked_ssim, l1_dtw
+from losses.pytorch_sdtw import SoftDTW
 
 
 class Trainer:
@@ -274,7 +276,9 @@ class DurationTrainer(Trainer):
 class ParallelTrainer(Trainer):
     def __init__(self,
                  hparams,
-                 adam_lr=0.002,
+                 adam_lr=0.005,
+                 warmup_epochs=20,
+                 init_scale=0.25,
                  ground_truth=False,
                  checkpoint=None,
                  device='cuda'
@@ -284,9 +288,11 @@ class ParallelTrainer(Trainer):
         dataset_root = osp.join(hparams.data.datasets_path, hparams.data.dataset_dir)
         dataset = SpeechDataset(['mels-gt' if ground_truth else 'mels', 'mlens', 'texts', 'tlens', 'drns'],
                                 dataset_root, hparams.text)
-        compute_metrics = self.recon_losses
+        self.sdtw = SoftDTW(use_cuda=(device.type == 'cuda'), gamma=0.1)
+        compute_metrics = self.recon_losses_v2
         optimizer = torch.optim.Adam(model.parameters(), lr=adam_lr)
-        scheduler = ReduceLROnPlateau(optimizer, factor=0.5, patience=3)
+        # scheduler = ReduceLROnPlateau(optimizer, factor=0.5, patience=3)
+        scheduler = NoamScheduler(optimizer, warmup_epochs, init_scale)
         optimizers = (optimizer, scheduler)
 
         super(ParallelTrainer, self).__init__(
@@ -353,7 +359,8 @@ class ParallelTrainer(Trainer):
 
             mels = self.normalizer(mels)
 
-            melspecs, prd_durans = self.model((texts, tlens, durations, 1.0))
+            # melspecs, prd_durans = self.model((texts, tlens, durations, 1.0))
+            melspecs, prd_durans = self.model((texts, tlens, None, 1.0))
             outputs_and_targets = (melspecs, mels, mlens, tlens, durations, prd_durans)
             loss, l1_loss, ssim_loss, drn_loss = self.compute_metrics(outputs_and_targets)
 
@@ -445,3 +452,19 @@ class ParallelTrainer(Trainer):
             loss = l1_loss + ssim_loss + drn_loss
         return loss, l1_loss, ssim_loss, drn_loss
 
+    def recon_losses_v2(self, outputs_and_targets, use_dtw=False):
+        melspecs, mels, mlens, tlens, durations, prd_durations  = outputs_and_targets
+        if use_dtw:
+            prd_mlens = prd_durations.sum(axis=-1).long()
+            l1_loss = l1_dtw(mels, mlens, melspecs, prd_mlens)
+            ssim_loss = torch.zeros(1)
+            drn_loss = masked_huber(prd_durations, durations.float(), tlens)
+            loss = l1_loss + drn_loss
+        else:
+            msk = mask(melspecs.shape, mlens, dim=1).float().to(melspecs.device)
+            melspecs = melspecs * msk
+            l1_loss = self.sdtw(melspecs, mels).mean()
+            ssim_loss = torch.zeros(1)
+            drn_loss = masked_huber(prd_durations, durations.float(), tlens)
+            loss = l1_loss + drn_loss
+        return loss, l1_loss, ssim_loss, drn_loss
