@@ -324,7 +324,8 @@ class ParallelTrainer(Trainer):
             train_losses = self._train_epoch(train_loader)
             valid_losses = self._validate(valid_loader)
 
-            self.scheduler.step(valid_losses[0])
+            # self.scheduler.step(valid_losses[0])
+            self.scheduler.step()
 
             if self.epoch % chkpt_every == 0:
                 # checkpoint at every 10th epoch
