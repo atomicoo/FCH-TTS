@@ -2,8 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .discriminator import Discriminator
-from .identity import Identity
+from .melgan import Discriminator
 
 
 class MultiScaleDiscriminator(nn.Module):
@@ -15,7 +14,7 @@ class MultiScaleDiscriminator(nn.Module):
         )
         
         self.pooling = nn.ModuleList(
-            [Identity()] +
+            [nn.Identity()] +
             [nn.AvgPool1d(kernel_size=4, stride=2, padding=1, count_include_pad=False) for _ in range(1, 3)]
         )
 
