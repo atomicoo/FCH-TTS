@@ -18,6 +18,27 @@ class Conv1d(nn.Conv1d):
         return super().forward(x.transpose(2,1)).transpose(2,1)
 
 
+class Conv(nn.Module):
+    """Conv1d/CausalConv1d module with customized initialization."""
+
+    def __init__(self, in_channels, out_channels, kernel_size, dilation=1, bias=True, causal=False):
+        """Initialize Conv1d/CausalConv1d module."""
+        super(Conv, self).__init__()
+        self.pad = ZeroTemporalPad(kernel_size, dilation, causal=causal)
+        self.causal = causal
+        self.conv = Conv1d(in_channels, out_channels, kernel_size,
+                           stride=1,  # paper: 'The stride of convolution is always 1.'
+                           dilation=dilation, bias=bias)
+
+    def forward(self, x):
+        """Calculate forward propagation.
+
+        :param x: (Tensor) Input tensor (batch, time, in_channels).
+        :returns: (Tensor) Output tensor (batch, time, out_channels).
+        """
+        return self.conv(self.pad(x))
+
+
 class FreqNorm(nn.BatchNorm1d):
     """Normalize separately each frequency channel in spectrogram and batch,
 
