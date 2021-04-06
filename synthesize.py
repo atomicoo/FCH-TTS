@@ -36,8 +36,11 @@ if __name__ == '__main__':
     parser.add_argument("--config", default=None, type=str, help="Config file path")
     args = parser.parse_args()
 
-    index = 0 if gm is None else gm.auto_choice()
-    device = select_device(args.device or str(index))
+    if torch.cuda.is_available():
+        index = args.device if args.device else str(0 if gm is None else gm.auto_choice())
+    else:
+        index = 'cpu'
+    device = select_device(index)
 
     hparams = HParam(args.config) \
         if args.config else HParam(osp.join(osp.abspath(os.getcwd()), "config", "default.yaml"))

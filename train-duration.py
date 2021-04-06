@@ -25,13 +25,17 @@ if __name__ == '__main__':
     parser.add_argument("--checkpoint", default=None, type=str, help="Checkpoint file path")
     parser.add_argument("--device", default=None, type=str, help='cuda device or cpu')
     parser.add_argument("--name", default="duration", type=str, help="Append to logdir name")
+    parser.add_argument("--enable_wandb", action='store_true', type=bool, help="Enable wandb or not")
     parser.add_argument("--project", default="parallel-speech", type=str, help="Project for wandb")
     parser.add_argument("--entity", default="atomicoo", type=str, help="Entity for wandb")
     parser.add_argument("--config", default=None, type=str, help='Config file path')
     args = parser.parse_args()
 
-    index = 0 if gm is None else gm.auto_choice()
-    device = select_device(args.device or str(index))
+    if torch.cuda.is_available():
+        index = args.device if args.device else str(0 if gm is None else gm.auto_choice())
+    else:
+        index = 'cpu'
+    device = select_device(index)
 
     hparams = HParam(args.config) \
         if args.config else HParam(osp.join(osp.abspath(os.getcwd()), "config", "default.yaml"))
@@ -39,7 +43,7 @@ if __name__ == '__main__':
     loggers = Logger(
         hparams.trainer.logdir,
         hparams.data.dataset, args.name,
-        wandb_info=None # {"project": args.project, "entity": args.entity}
+        wandb_info={"project": args.project, "entity": args.entity} if args.enable_wandb else None
     )
 
     trainer = DurationTrainer(

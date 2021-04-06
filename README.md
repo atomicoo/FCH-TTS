@@ -16,8 +16,8 @@
      |--- ...
 |--- logdir/      # 训练过程保存目录
 |--- losses/      # 一些损失函数
-|--- melgan/      # 声码器
-     |--- generator.py
+|--- vocoder/     # 声码器
+     |--- melgan.py
      |--- ...
 |--- models/      # 合成模型
      |--- layers.py
@@ -97,4 +97,9 @@ $ python train-parallel.py
 ```
 
 通过 `--ground_truth` 可以指定是否使用 Ground-Truth 声谱图进行模型训练。
+
+## TODO
+
+- [ ] 更多不同语种的测试
+- [ ] 语音风格迁移（音色）
 
