@@ -69,13 +69,13 @@ class FreqNorm(nn.BatchNorm1d):
 class ResidualBlock(nn.Module):
     """Implements conv->PReLU->norm n-times"""
 
-    def __init__(self, channels, kernel_size, dilation,  n=2, norm=FreqNorm, activation=nn.ReLU):
+    def __init__(self, channels, kernel_size, dilation, n=2, causal=False, norm=FreqNorm, activation=nn.ReLU):
         super(ResidualBlock, self).__init__()
 
         self.blocks = [
             nn.Sequential(
                 Conv1d(channels, channels, kernel_size, dilation=dilation),
-                ZeroTemporalPad(kernel_size, dilation),
+                ZeroTemporalPad(kernel_size, dilation, causal=causal),
                 activation(),
                 norm(channels),  # Normalize after activation. if we used ReLU, half of our neurons would be dead!
             )
@@ -89,19 +89,18 @@ class ResidualBlock(nn.Module):
 
 
 class GatedConvBlock(nn.Module):
-    """Implements conv->PReLU->norm n_1-times->GLU"""
+    """Implements conv->PReLU->norm->GLU"""
 
-    def __init__(self, channels, kernel_size, dilation,  n=2, norm=FreqNorm, activation=nn.ReLU, causal=True):
+    def __init__(self, channels, kernel_size, dilation, causal=False, norm=FreqNorm, activation=nn.ReLU):
         super(ResidualBlock, self).__init__()
 
         self.blocks = [
             nn.Sequential(
-                Conv1d(channels, channels, kernel_size, dilation=dilation),
-                ZeroTemporalPad(kernel_size, dilation, causal),
+                Conv1d(channels, 2*channels, kernel_size, dilation=dilation),
+                ZeroTemporalPad(kernel_size, dilation, causal=causal),
                 activation(),
-                norm(channels),  # Normalize after activation. if we used ReLU, half of our neurons would be dead!
+                norm(2*channels),  # Normalize after activation. if we used ReLU, half of our neurons would be dead!
             )
-            for i in range(n-1)
         ]
         self.blocks.extend([nn.GLU(dim=1)])
 

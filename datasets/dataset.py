@@ -45,7 +45,7 @@ class TextProcessor:
         text = re.sub("[ ]+", " ", text)
         # keep_re = "[^" + str(self.graphemes+self.punctuations) +"]"
         # text = re.sub(keep_re, " ", text)  # remove
-        # text = [ch for ch in text if ch in self.graphemes+self.punctuations]
+        text = [ch if ch in self.graphemes+self.punctuations else ' ' for ch in text]
         text = list(text)
         if self.phonemize:
             text = self.g2p(''.join(text))
