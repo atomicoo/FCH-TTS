@@ -25,7 +25,7 @@ if __name__ == '__main__':
     parser.add_argument("--checkpoint", default=None, type=str, help="Checkpoint file path")
     parser.add_argument("--device", default=None, type=str, help='cuda device or cpu')
     parser.add_argument("--name", default="duration", type=str, help="Append to logdir name")
-    parser.add_argument("--enable_wandb", action='store_true', type=bool, help="Enable wandb or not")
+    parser.add_argument("--enable_wandb", action='store_true', help="Enable wandb or not")
     parser.add_argument("--project", default="parallel-speech", type=str, help="Project for wandb")
     parser.add_argument("--entity", default="atomicoo", type=str, help="Entity for wandb")
     parser.add_argument("--config", default=None, type=str, help='Config file path')

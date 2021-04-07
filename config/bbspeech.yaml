@@ -1,32 +1,32 @@
 data:
   datasets_path: './datasets'
-  dataset: 'ljspeech'
-  dataset_dir: 'LJSpeech-1.1'
+  dataset: 'bbspeech'
+  dataset_dir: 'BBSpeech-1.0'
 text:
-  graphemes: &gs !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz")']
-  phonemes: &ps !!python/object/apply:eval ['["X"] * 70']
+  graphemes: &gs !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz12345")']
+  phonemes: &ps !!python/object/apply:eval ['[]']
   specials: &sp !!python/object/apply:eval ['["<pad>", "<unk>"]']
   punctuations: &pt !!python/object/apply:eval ['[".", ",", "?", "!", " ", "-"]']
-  units_list: &ul !!python/object/apply:eval ['us+sp+pt', {'us': *ps, 'sp': *sp, 'pt': *pt}]
-  use_phonemes: &up true
+  units_list: &ul !!python/object/apply:eval ['us+sp+pt', {'us': *gs, 'sp': *sp, 'pt': *pt}]
+  use_phonemes: &up false
 audio:
   n_mel_channels: &nm 80
   filter_length: 1024
   hop_length: 256  # WARNING: this can't be changed.
   win_length: 1024
-  sampling_rate: &sr 22050
+  sampling_rate: &sr 24000  # 48000
   segment_length: *sr
   pad_short: 2000
   mel_fmin: 0.0
   mel_fmax: 8000.0
   # Precomputed statistics for log-mel-spectrs for speech dataset
-  spec_mean: -5.522  # for LJSpeech dataset
-  spec_std: 2.063  # for LJSpeech dataset
-  spec_min: -11.5129  # for LJSpeech dataset
-  spec_max: 2.0584  # for LJSpeech dataset
+  spec_mean: -5.419  # -6.344  # for BBSpeech dataset
+  spec_std: 2.459  # 2.804  # for BBSpeech dataset
+  spec_min: -11.5129  # -11.5129  # for BBSpeech dataset
+  spec_max: 1.4167  # 1.1705  # for BBSpeech dataset
   # Others
-  force_frame_rate: true
-  normalize: false
+  force_frame_rate: false
+  normalize: true  # false
   reduction_rate: 4
 parallel:
   ground_truth: false
@@ -71,5 +71,5 @@ trainer:
   disable_progress_bar: false
   logdir: './logdir'
 synthesizer:
-  inputs_file_path: './outputs/text/synthesize.txt'
-  outputs_dir: './outputs/audio'
+  inputs_file_path: './samples/text/synthesize-bb.txt'
+  outputs_dir: './samples/audio'
