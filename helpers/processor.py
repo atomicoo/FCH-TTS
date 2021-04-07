@@ -14,8 +14,6 @@ from pydub import AudioSegment
 from utils.stft import MySTFT
 from utils.transform import MinMaxNorm, StandardNorm
 
-from voienc import VoiceEncoder, preprocess_wav
-
 
 def read_audio_from_file(path, format=None):
     format = format or path.split('.')[-1]
@@ -27,7 +25,6 @@ def match_target_amplitude(sound, target_dBFS=-20):
     return sound.apply_gain(change_in_dBFS)
 
 def trim_long_silences(sound, silence_len=700, silence_thresh=None, padding=100):
-    print(padding)
     sound_dBFS = sound.dBFS
     sil_thresh = silence_thresh or sound_dBFS-10
     trimmed_sound = AudioSegment.strip_silence(
@@ -56,8 +53,6 @@ class Processor:
                 mel_fmin=self.hparams.mel_fmin,
                 mel_fmax=self.hparams.mel_fmax)
 
-        self.voice_enc = VoiceEncoder('cpu')
-
     def get_spectrograms(self, fpath, norm=False):
         # wav, sr = librosa.load(fpath, sr=None)
         sound = read_audio_from_file(fpath, format='wav')
@@ -82,11 +77,6 @@ class Processor:
         mel, mag = self.stft.mel_spectrogram(wav)
         return mel, mag
 
-    def get_embeddings(self, fpath):
-        wav = preprocess_wav(fpath)
-        emb = self.voice_enc.embed_utterance(wav)
-        return emb
-
     def preprocess(self, dataset_path, speech_dataset):
         """Pre-process the given dataset."""
         print("Pre-processing ...")
@@ -94,12 +84,8 @@ class Processor:
         wavs_path = osp.join(dataset_path, 'wavs')
         mels_path = osp.join(dataset_path, 'mels')
         os.makedirs(mels_path, exist_ok=True)
-        embs_path = osp.join(dataset_path, 'embs')
-        os.makedirs(embs_path, exist_ok=True)
 
         for i, fname in tqdm(enumerate(speech_dataset.fnames)):
-            emb = self.get_embeddings(os.path.join(wavs_path, '%s.wav' % fname))
-
             mel, _ = self.get_spectrograms(osp.join(wavs_path, '%s.wav' % fname), self.hparams.normalize)
             mel = mel.squeeze(0)
             # mel = standard_norm(mel).clamp(hp.scale_min,hp.scale_max)
@@ -114,7 +100,6 @@ class Processor:
             # Reduction
             # mel = mel[::hp.reduction_rate, :]
 
-            np.save(osp.join(embs_path, '%s.npy' % fname), emb)
             np.save(osp.join(mels_path, '%s.npy' % fname), mel)
 
 
