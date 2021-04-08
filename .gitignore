@@ -5,6 +5,7 @@
 datasets/*Speech*
 logdir/
 outputs/
+pretrained/private.*
 vocoder/utils/
 wandb/
 

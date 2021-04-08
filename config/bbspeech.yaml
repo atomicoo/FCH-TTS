@@ -17,8 +17,8 @@ audio:
   sampling_rate: &sr 24000  # 48000
   segment_length: *sr
   pad_short: 2000
-  mel_fmin: 0.0
-  mel_fmax: 8000.0
+  mel_fmin: 80.0
+  mel_fmax: 7600.0
   # Precomputed statistics for log-mel-spectrs for speech dataset
   spec_mean: -5.419  # -6.344  # for BBSpeech dataset
   spec_std: 2.459  # 2.804  # for BBSpeech dataset

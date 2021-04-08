@@ -12,7 +12,7 @@ import torch
 from utils.hparams import HParam
 from utils.transform import StandardNorm
 from helpers.synthesizer import Synthesizer
-from vocoder.models import MelGANGenerator
+import vocoder.models
 from utils.audio import dynamic_range_decompression
 from datasets.dataset import TextProcessor
 from models import ParallelText2Mel
@@ -83,7 +83,9 @@ if __name__ == '__main__':
     decompressed_log10_norm = (decompressed_log10 - mu) / sigma
     melspecs = (decompressed_log10 - mu) / sigma
 
-    vocoder = MelGANGenerator(**ckpt['config']).to(device)
+    Generator = getattr(vocoder.models, ckpt['gtype'])
+
+    vocoder = Generator(**ckpt['config']).to(device)
     vocoder.remove_weight_norm()
     vocoder.load_state_dict(ckpt['model'])
 
