@@ -26,7 +26,9 @@ audio:
   spec_max: 1.4167  # 1.1705  # for BBSpeech dataset
   # Others
   force_frame_rate: false
-  normalize: true  # false
+  normalize:
+    match_volume: true
+    trim_silence: true
   reduction_rate: 4
 parallel:
   ground_truth: false
@@ -71,5 +73,5 @@ trainer:
   disable_progress_bar: false
   logdir: './logdir'
 synthesizer:
-  inputs_file_path: './samples/text/synthesize-bb.txt'
-  outputs_dir: './samples/audio'
+  inputs_file_path: './outputs/text/synthesize-bb.txt'
+  outputs_dir: './outputs/audio'

@@ -24,7 +24,7 @@ def match_target_amplitude(sound, target_dBFS=-20):
     change_in_dBFS = target_dBFS - sound.dBFS
     return sound.apply_gain(change_in_dBFS)
 
-def trim_long_silences(sound, silence_len=700, silence_thresh=None, padding=100):
+def trim_long_silences(sound, silence_len=300, silence_thresh=None, padding=50):
     sound_dBFS = sound.dBFS
     sil_thresh = silence_thresh or sound_dBFS-10
     trimmed_sound = AudioSegment.strip_silence(
@@ -53,7 +53,7 @@ class Processor:
                 mel_fmin=self.hparams.mel_fmin,
                 mel_fmax=self.hparams.mel_fmax)
 
-    def get_spectrograms(self, fpath, norm=False):
+    def get_spectrograms(self, fpath, norm):
         # wav, sr = librosa.load(fpath, sr=None)
         sound = read_audio_from_file(fpath, format='wav')
 
@@ -62,8 +62,9 @@ class Processor:
                 "sample rate mismatch. expected %d, got %d at %s" % \
                 (self.hparams.sampling_rate, sound.frame_rate, fpath)
 
-        if norm:
+        if norm.match_volume:
             sound = match_target_amplitude(sound)
+        if norm.trim_silence:
             sound = trim_long_silences(sound)
 
         wav = from_pydub_to_librosa(sound, self.hparams.sampling_rate)

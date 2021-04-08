@@ -1,3 +1,5 @@
+简体中文 | [English](./README_en.md)
+
 # 并行语音合成
 
 [TOC]
@@ -10,15 +12,15 @@
      |--- default.yaml
      |--- ...
 |--- datasets/    # 数据处理
+|--- encoder/     # 声纹编码器
+     |--- voice_encoder.py
+     |--- ...
 |--- helpers/     # 一些辅助类
      |--- trainer.py
      |--- synthesizer.py
      |--- ...
 |--- logdir/      # 训练过程保存目录
 |--- losses/      # 一些损失函数
-|--- vocoder/     # 声码器
-     |--- melgan.py
-     |--- ...
 |--- models/      # 合成模型
      |--- layers.py
      |--- duration.py
@@ -26,10 +28,14 @@
 |--- pretrained/  # 预训练模型（LJSpeech 数据集）
 |--- samples/     # 合成样例
 |--- utils/       # 一些通用方法
+|--- vocoder/     # 声码器
+     |--- melgan.py
+     |--- ...
 |--- wandb/       # Wandb 保存目录
+|--- extract-duration.py
+|--- extract-embedding.py
 |--- LICENSE
 |--- prepare-dataset.py  # 准备脚本
-|--- extract-duration.py
 |--- README.md
 |--- requirements.txt    # 依赖文件
 |--- synthesize.py       # 合成脚本
@@ -134,3 +140,8 @@ TODO：待补充
 - [ ] 更多不同语种的测试
 - [ ] 语音风格迁移（音色）
 
+## 欢迎交流
+
+- 微信号：Joee1995
+
+- 企鹅号：793071559

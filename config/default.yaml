@@ -26,7 +26,9 @@ audio:
   spec_max: 2.0584  # for LJSpeech dataset
   # Others
   force_frame_rate: true  # force match sampling rate
-  normalize: false
+  normalize: 
+    match_volume: false
+    trim_silence: false
   reduction_rate: 4
 parallel:
   ground_truth: false
