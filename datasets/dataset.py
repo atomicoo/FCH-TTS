@@ -45,7 +45,7 @@ class TextProcessor:
         text = re.sub("[ ]+", " ", text)
         # keep_re = "[^" + str(self.graphemes+self.punctuations) +"]"
         # text = re.sub(keep_re, " ", text)  # remove
-        # text = [ch for ch in text if ch in self.graphemes+self.punctuations]
+        text = [ch if ch in self.graphemes+self.punctuations else ' ' for ch in text]
         text = list(text)
         if self.phonemize:
             text = self.g2p(''.join(text))
@@ -73,12 +73,14 @@ class SpeechDataset(Dataset):
         self.fnames, self.text_lengths, self.texts = \
             self.read_metadata(osp.join(self.path, 'metadata.csv'))
         del self.text_proc
-        self.durans = None
+        self.embeds = self.durans = None
 
     def slice(self, start, end):
         self.fnames = self.fnames[start:end]
         self.text_lengths = self.text_lengths[start:end]
         self.texts = self.texts[start:end]
+        if self.embeds is not None:
+            self.embeds = self.embeds[start:end]
         if self.durans is not None:
             self.durans = self.durans[start:end]
 
@@ -97,6 +99,11 @@ class SpeechDataset(Dataset):
         duration_file = duration_file or osp.join(self.path, 'duration.txt')
         lines = codecs.open(duration_file, 'r', 'utf-8').readlines()
         self.durans = [[int(x) for x in l.split(',')] for l in lines]
+
+    def load_embeddings(self, embedding_file=None):
+        embedding_file = embedding_file or osp.join(self.path, 'embedding.txt')
+        lines = codecs.open(embedding_file, 'r', 'utf-8').readlines()
+        self.embeds = [[float(x) for x in l.split(',')] for l in lines]
 
     def get_test_data(self, texts, max_n=None):
         return self.text_proc(texts, max_n=max_n)
@@ -120,10 +127,7 @@ class SpeechDataset(Dataset):
             data['mlens'] = np.array([data['mels'].shape[0]])
         if 'embs' in self.keys:
             # (256,)
-            data['embs'] = np.load(os.path.join(self.path, 'embs', "%s.npy" % self.fnames[index]))
-        # if 'drns' in self.keys:
-        #     # (N,)
-        #     data['drns'] = np.load(os.path.join(self.path, 'drns', "%s.npy" % self.fnames[index]))
+            data['embs'] = np.array(self.embeds[index])
         if 'drns' in self.keys:
             # (N,)
             data['drns'] = np.array(self.durans[index])

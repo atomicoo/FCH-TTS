@@ -25,7 +25,10 @@ audio:
   spec_min: -11.5129  # for TBSpeech dataset
   spec_max: 2.3985  # for TBSpeech dataset
   # Others
-  normalize: true
+  force_frame_rate: true
+  normalize: 
+    match_volume: true
+    trim_silence: true
   reduction_rate: 4
 parallel:
   ground_truth: false
