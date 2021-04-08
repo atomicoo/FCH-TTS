@@ -12,7 +12,7 @@ import torch
 from utils.hparams import HParam
 from utils.transform import StandardNorm
 from helpers.synthesizer import Synthesizer
-from vocoder.melgan import Generator
+from vocoder_melgan.melgan import Generator
 from datasets.dataset import TextProcessor
 from models import ParallelText2Mel
 
