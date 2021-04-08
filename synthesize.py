@@ -12,7 +12,7 @@ import torch
 from utils.hparams import HParam
 from utils.transform import StandardNorm
 from helpers.synthesizer import Synthesizer
-from melgan.generator import Generator
+from vocoder.melgan import Generator
 from datasets.dataset import TextProcessor
 from models import ParallelText2Mel
 
@@ -29,6 +29,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--batch_size", default=8, type=int, help="Batch size")
     parser.add_argument("--checkpoint", default=None, type=str, help="Checkpoint file path")
+    parser.add_argument("--melgan_checkpoint", default=None, type=str, help="Checkpoint file path of melgan")
     parser.add_argument("--input_texts", default=None, type=str, help="Input text file path")
     parser.add_argument("--outputs_dir", default=None, type=str, help="Output wave file directory")
     parser.add_argument("--device", default=None, help="cuda device or cpu")
@@ -36,8 +37,11 @@ if __name__ == '__main__':
     parser.add_argument("--config", default=None, type=str, help="Config file path")
     args = parser.parse_args()
 
-    index = 0 if gm is None else gm.auto_choice()
-    device = select_device(args.device or str(index))
+    if torch.cuda.is_available():
+        index = args.device if args.device else str(0 if gm is None else gm.auto_choice())
+    else:
+        index = 'cpu'
+    device = select_device(index)
 
     hparams = HParam(args.config) \
         if args.config else HParam(osp.join(osp.abspath(os.getcwd()), "config", "default.yaml"))
@@ -68,7 +72,7 @@ if __name__ == '__main__':
 
     vocoder = Generator(hparams.audio.n_mel_channels).to(device)
     vocoder.eval(inference=True)
-    vocoder_checkpoint = \
+    vocoder_checkpoint = args.melgan_checkpoint or \
         osp.join(hparams.trainer.logdir, f"{hparams.data.dataset}-melgan", hparams.melgan.checkpoint)
     vocoder.load_state_dict(torch.load(vocoder_checkpoint, map_location=device))
 

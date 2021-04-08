@@ -10,76 +10,33 @@ import torch
 import torch.nn.functional as F
 
 import librosa
-from utils.hparams import HParam
+from pydub import AudioSegment
 from utils.stft import MySTFT
 from utils.transform import MinMaxNorm, StandardNorm
 
-from datasets.dataset import SpeechDataset
 
-from scipy.ndimage.morphology import binary_dilation
-import webrtcvad
-import struct
+def read_audio_from_file(path, format=None):
+    format = format or path.split('.')[-1]
+    sound = AudioSegment.from_file(path, format=format)
+    return sound
 
-from voienc import VoiceEncoder, hparams, preprocess_wav
+def match_target_amplitude(sound, target_dBFS=-20):
+    change_in_dBFS = target_dBFS - sound.dBFS
+    return sound.apply_gain(change_in_dBFS)
 
+def trim_long_silences(sound, silence_len=300, silence_thresh=None, padding=50):
+    sound_dBFS = sound.dBFS
+    sil_thresh = silence_thresh or sound_dBFS-10
+    trimmed_sound = AudioSegment.strip_silence(
+        sound, silence_len=silence_len, silence_thresh=sil_thresh, padding=padding)
+    return trimmed_sound
 
-int16_max = (2 ** 15) - 1
-
-def trim_long_silences(wav, sampling_rate=22050,
-                       vad_window_length=30, 
-                       vad_moving_average_width=8,
-                       vad_max_silence_length=6):
-    """
-    Ensures that segments without voice in the waveform remain no longer than a 
-    threshold determined by the VAD parameters in params.py.
-
-    :param wav: the raw waveform as a numpy array of floats 
-    :return: the same waveform with silences trimmed away (length <= original wav length)
-    """
-    # Compute the voice detection window size
-    samples_per_window = (vad_window_length * sampling_rate) // 1000
-    
-    # Trim the end of the audio to have a multiple of the window size
-    wav = wav[:len(wav) - (len(wav) % samples_per_window)]
-    
-    # Convert the float waveform to 16-bit mono PCM
-    pcm_wave = struct.pack("%dh" % len(wav), *(np.round(wav * int16_max)).astype(np.int16))
-    
-    # Perform voice activation detection
-    voice_flags = []
-    vad = webrtcvad.Vad(mode=3)
-    for window_start in range(0, len(wav), samples_per_window):
-        window_end = window_start + samples_per_window
-        voice_flags.append(vad.is_speech(pcm_wave[window_start * 2:window_end * 2],
-                                         sample_rate=sampling_rate))
-    voice_flags = np.array(voice_flags)
-    
-    # Smooth the voice detection with a moving average
-    def moving_average(array, width):
-        array_padded = np.concatenate((np.zeros((width - 1) // 2), array, np.zeros(width // 2)))
-        ret = np.cumsum(array_padded, dtype=float)
-        ret[width:] = ret[width:] - ret[:-width]
-        return ret[width - 1:] / width
-    
-    audio_mask = moving_average(voice_flags, vad_moving_average_width)
-    audio_mask = np.round(audio_mask).astype(np.bool)
-    
-    # Dilate the voiced regions
-    audio_mask = binary_dilation(audio_mask, np.ones(vad_max_silence_length + 1))
-    audio_mask = np.repeat(audio_mask, samples_per_window)
-    
-    return wav[audio_mask == True]
-
-
-def normalize_volume(wav, target_dBFS=-20, increase_only=False, decrease_only=False):
-    if increase_only and decrease_only:
-        raise ValueError("Both increase only and decrease only are set")
-    rms = np.sqrt(np.mean((wav * int16_max) ** 2))
-    wave_dBFS = 20 * np.log10(rms / int16_max)
-    dBFS_change = target_dBFS - wave_dBFS
-    if dBFS_change < 0 and increase_only or dBFS_change > 0 and decrease_only:
-        return wav
-    return wav * (10 ** (dBFS_change / 20))
+def from_pydub_to_librosa(sound, sampling_rate=22050):
+    samples = sound.get_array_of_samples()
+    wav = np.array(samples).astype(np.float32)
+    wav /= np.iinfo(samples.typecode).max
+    wav = librosa.core.resample(wav, sound.frame_rate, sampling_rate, res_type='kaiser_best')
+    return wav
 
 
 class Processor:
@@ -96,18 +53,21 @@ class Processor:
                 mel_fmin=self.hparams.mel_fmin,
                 mel_fmax=self.hparams.mel_fmax)
 
-        self.voice_enc = VoiceEncoder('cpu')
+    def get_spectrograms(self, fpath, norm):
+        # wav, sr = librosa.load(fpath, sr=None)
+        sound = read_audio_from_file(fpath, format='wav')
 
-    def get_spectrograms(self, fpath, norm=False):
-        wav, sr = librosa.load(fpath, sr=None)
+        if self.hparams.force_frame_rate:
+            assert sound.frame_rate == self.hparams.sampling_rate, \
+                "sample rate mismatch. expected %d, got %d at %s" % \
+                (self.hparams.sampling_rate, sound.frame_rate, fpath)
 
-        assert sr == self.hparams.sampling_rate, \
-            "sample rate mismatch. expected %d, got %d at %s" % \
-            (self.hparams.sampling_rate, sr, fpath)
+        if norm.match_volume:
+            sound = match_target_amplitude(sound)
+        if norm.trim_silence:
+            sound = trim_long_silences(sound)
 
-        if norm:
-            wav = normalize_volume(wav, increase_only=True)
-            wav = trim_long_silences(wav, sampling_rate=self.hparams.sampling_rate)
+        wav = from_pydub_to_librosa(sound, self.hparams.sampling_rate)
 
         if len(wav) < self.hparams.segment_length + self.hparams.pad_short:
             wav = np.pad(wav, (0, self.hparams.segment_length + self.hparams.pad_short - len(wav)), \
@@ -118,11 +78,6 @@ class Processor:
         mel, mag = self.stft.mel_spectrogram(wav)
         return mel, mag
 
-    def get_embeddings(self, fpath):
-        wav = preprocess_wav(fpath)
-        emb = self.voice_enc.embed_utterance(wav)
-        return emb
-
     def preprocess(self, dataset_path, speech_dataset):
         """Pre-process the given dataset."""
         print("Pre-processing ...")
@@ -130,12 +85,8 @@ class Processor:
         wavs_path = osp.join(dataset_path, 'wavs')
         mels_path = osp.join(dataset_path, 'mels')
         os.makedirs(mels_path, exist_ok=True)
-        embs_path = osp.join(dataset_path, 'embs')
-        os.makedirs(embs_path, exist_ok=True)
 
         for i, fname in tqdm(enumerate(speech_dataset.fnames)):
-            emb = self.get_embeddings(os.path.join(wavs_path, '%s.wav' % fname))
-
             mel, _ = self.get_spectrograms(osp.join(wavs_path, '%s.wav' % fname), self.hparams.normalize)
             mel = mel.squeeze(0)
             # mel = standard_norm(mel).clamp(hp.scale_min,hp.scale_max)
@@ -150,7 +101,6 @@ class Processor:
             # Reduction
             # mel = mel[::hp.reduction_rate, :]
 
-            np.save(osp.join(embs_path, '%s.npy' % fname), emb)
             np.save(osp.join(mels_path, '%s.npy' % fname), mel)
 
 
