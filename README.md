@@ -42,6 +42,7 @@
 |--- LICENSE
 |--- prepare-dataset.py  # 准备脚本
 |--- README.md
+|--- README_en.md
 |--- requirements.txt    # 依赖文件
 |--- synthesize.py       # 合成脚本
 |--- train-duration.py   # 训练脚本
@@ -150,6 +151,18 @@ TODO：待补充
 ## 一些问题
 
 - 在 [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) 分支中，`vocoder` 代码取自 [ParallelWaveGAN](https://github.com/kan-bayashi/ParallelWaveGAN)，由于声学特征提取方式不兼容，需要进行转化，具体转化代码见[这里](https://github.com/atomicoo/ParallelTTS/blob/4eb44679271494f1d478da281ae474a07dfe77c6/synthesize.wave.py#L79-L85)。
+- 普通话模型的文本输入选择拼音序列，因为 [BiaoBei](https://www.data-baker.com/open_source.html) 的原始拼音序列不包含标点、以及对齐模型训练不完全，所以合成语音的节奏会有点问题。
+
+## 参考资料
+
+- [Kyubyong/tacotron](https://github.com/Kyubyong/tacotron)
+- [r9y9/deepvoice3_pytorch](https://github.com/r9y9/deepvoice3_pytorch)
+- [tugstugi/pytorch-dc-tts](https://github.com/tugstugi/pytorch-dc-tts)
+- [janvainer/speedyspeech](https://github.com/janvainer/speedyspeech)
+- [Po-Hsun-Su/pytorch-ssim](https://github.com/Po-Hsun-Su/pytorch-ssim)
+- [Maghoumi/pytorch-softdtw-cuda](https://github.com/Maghoumi/pytorch-softdtw-cuda)
+- [seungwonpark/melgan](https://github.com/seungwonpark/melgan)
+- [kan-bayashi/ParallelWaveGAN](https://github.com/kan-bayashi/ParallelWaveGAN)
 
 ## TODO
 

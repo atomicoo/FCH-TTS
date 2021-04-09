@@ -150,6 +150,18 @@ Attention, no multiple tests, for reference only.
 ## Few Issues
 
 - In [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) branch, code of `vocoder` is from [ParallelWaveGAN](https://github.com/kan-bayashi/ParallelWaveGAN). Since the method of acoustic feature extraction is not compatible, it needs to be transformed. See [here](https://github.com/atomicoo/ParallelTTS/blob/4eb44679271494f1d478da281ae474a07dfe77c6/synthesize.wave.py#L79-L85).
+- The input of mandarin model is pinyin. Because of the lack of punctuations in [BiaoBei](https://www.data-baker.com/open_source.html)'s raw pinyin sequence and the incomplete alignment model training, there's something wrong with the rhythm of synthesized samples.
+
+## References
+
+- [Kyubyong/tacotron](https://github.com/Kyubyong/tacotron)
+- [r9y9/deepvoice3_pytorch](https://github.com/r9y9/deepvoice3_pytorch)
+- [tugstugi/pytorch-dc-tts](https://github.com/tugstugi/pytorch-dc-tts)
+- [janvainer/speedyspeech](https://github.com/janvainer/speedyspeech)
+- [Po-Hsun-Su/pytorch-ssim](https://github.com/Po-Hsun-Su/pytorch-ssim)
+- [Maghoumi/pytorch-softdtw-cuda](https://github.com/Maghoumi/pytorch-softdtw-cuda)
+- [seungwonpark/melgan](https://github.com/seungwonpark/melgan)
+- [kan-bayashi/ParallelWaveGAN](https://github.com/kan-bayashi/ParallelWaveGAN)
 
 ## TODO
 
