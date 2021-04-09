@@ -13,6 +13,7 @@ from utils.hparams import HParam
 from utils.transform import StandardNorm
 from helpers.synthesizer import Synthesizer
 import vocoder.models
+from vocoder.layers import PQMF
 from utils.audio import dynamic_range_decompression
 from datasets.dataset import TextProcessor
 from models import ParallelText2Mel
@@ -87,9 +88,14 @@ if __name__ == '__main__':
 
     vocoder = Generator(**ckpt['config']).to(device)
     vocoder.remove_weight_norm()
+    if ckpt['config']['out_channels'] > 1:
+        vocoder.pqmf = PQMF()
     vocoder.load_state_dict(ckpt['model'])
 
-    waves = vocoder(melspecs).squeeze(1)
+    if ckpt['config']['out_channels'] > 1:
+        waves = vocoder.pqmf.synthesis(vocoder(melspecs)).squeeze(1)
+    else:
+        waves = vocoder(melspecs).squeeze(1)
     print(f"Generate {len(texts)} audios, total elapsed {time.time()-since:.3f}s. Done.")
 
     print('Saving audio...')
