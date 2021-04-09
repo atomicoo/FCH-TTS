@@ -4,6 +4,11 @@
 
 [TOC]
 
+## What's New
+
+- 2021/04/09 [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) branch support [PWG](https://arxiv.org/abs/1910.11480) / [MelGAN](https://arxiv.org/abs/1910.06711) / [Multi-band MelGAN](https://arxiv.org/abs/2005.05106) vocoder!
+- 2021/04/05 Support [ParallelText2Mel](https://github.com/atomicoo/ParallelTTS/blob/main/models/parallel.py) + [MelGAN](https://arxiv.org/abs/1910.06711) vocoder!
+
 ## Repo Structure
 
 ```
@@ -81,7 +86,7 @@ $ python synthesize.py
 $ python prepare-dataset.py
 ```
 
-Through `--config` to set config file, default (`default.yaml`) is for LJSpeech dataset.
+Through `--config` to set config file, default ([`default.yaml`](https://github.com/atomicoo/ParallelTTS/blob/main/config/default.yaml)) is for [LJSpeech](https://keithito.com/LJ-Speech-Dataset/) dataset.
 
 **Step (2)**：train alignment model
 
@@ -115,6 +120,14 @@ $ tensorboard --logdir logdir/[DIR]/
 
 It is highly recommended to use [Wandb](https://wandb.ai/)（Weights & Biases）, just set `--enable_wandb` when training。
 
+## Datasets
+
+- [LJSpeech](https://keithito.com/LJ-Speech-Dataset/): English, Female, 22050 Hz, ~24 h
+- [JSUT](https://sites.google.com/site/shinnosuketakamichi/publication/jsut): Japanese, Female, 48000 Hz, ~10 h
+- [BiaoBei](https://www.data-baker.com/open_source.html): Mandarin, Female, 48000 Hz, ~12 h
+- [RuLS](https://www.openslr.org/96/): Russian, Multi-speakers (only use audios of single speaker), 16000 Hz, ~98 h
+- [TWLSpeech](#) (non-public, poor quality): Tibetan, Female (multi-speakers, sound similar), 16000 Hz，~23 h
+
 ## Quality
 
 TODO: to be added.
@@ -132,7 +145,11 @@ TODO: to be added.
 | 4          | 0.053         | 0.863          | 0.407         | 7.897          |
 | 8          | 0.062         | 2.386          | 0.878         | 14.599         |
 
-Attention, 
+Attention, no multiple tests, for reference only.
+
+## Few Issues
+
+- In [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) branch, code of `vocoder` is from [ParallelWaveGAN](https://github.com/kan-bayashi/ParallelWaveGAN). Since the method of acoustic feature extraction is not compatible, it needs to be transformed. See [here](https://github.com/atomicoo/ParallelTTS/blob/4eb44679271494f1d478da281ae474a07dfe77c6/synthesize.wave.py#L79-L85).
 
 ## TODO
 
