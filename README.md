@@ -8,6 +8,7 @@
 
 - 2021/04/09 [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) 分支 提供 [PWG](https://arxiv.org/abs/1910.11480) / [MelGAN](https://arxiv.org/abs/1910.06711) / [Multi-band MelGAN](https://arxiv.org/abs/2005.05106) 声码器！
 - 2021/04/05 支持 [ParallelText2Mel](https://github.com/atomicoo/ParallelTTS/blob/main/models/parallel.py) + [MelGAN](https://arxiv.org/abs/1910.06711) 声码器！
+- [ 关键信息 ]  [速度指标](#速度指标)，[合成样例](https://github.com/atomicoo/ParallelTTS/tree/main/samples/)，[网页演示](#)，[欢迎交流](#欢迎交流) ……
 
 ## 目录结构
 
@@ -126,6 +127,7 @@ $ tensorboard --logdir logdir/[DIR]/
 - [LJSpeech](https://keithito.com/LJ-Speech-Dataset/)：英语，女性，22050 Hz，约 24 小时
 - [JSUT](https://sites.google.com/site/shinnosuketakamichi/publication/jsut)：日语，女性，48000 Hz，约 10 小时
 - [BiaoBei](https://www.data-baker.com/open_source.html)：普通话，女性，48000 Hz，约 12 小时
+- [KSS](https://www.kaggle.com/bryanpark/korean-single-speaker-speech-dataset)：韩语，女性，44100 Hz，约 12 小时
 - [RuLS](https://www.openslr.org/96/)：俄语，多说话人（仅使用单一说话人音频），16000 Hz，约 98 小时
 - [TWLSpeech](#)（非公开，质量较差）：藏语，女性（多说话人，音色相近），16000 Hz，约 23 小时
 
@@ -152,6 +154,7 @@ TODO：待补充
 
 - 在 [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) 分支中，`vocoder` 代码取自 [ParallelWaveGAN](https://github.com/kan-bayashi/ParallelWaveGAN)，由于声学特征提取方式不兼容，需要进行转化，具体转化代码见[这里](https://github.com/atomicoo/ParallelTTS/blob/4eb44679271494f1d478da281ae474a07dfe77c6/synthesize.wave.py#L79-L85)。
 - 普通话模型的文本输入选择拼音序列，因为 [BiaoBei](https://www.data-baker.com/open_source.html) 的原始拼音序列不包含标点、以及对齐模型训练不完全，所以合成语音的节奏会有点问题。
+- 韩语模型没有专门训练对应的声码器，而是直接使用 LJSpeech（同为 22050 Hz）的声码器，可能稍微影响合成语音的质量。
 
 ## 参考资料
 
