@@ -76,12 +76,12 @@ if __name__ == '__main__':
         osp.join(hparams.trainer.logdir, f"{hparams.data.dataset}-melgan", hparams.melgan.checkpoint)
     ckpt = torch.load(vocoder_checkpoint, map_location=device)
 
+    # Ref: https://github.com/kan-bayashi/ParallelWaveGAN/issues/169
     decompressed  = dynamic_range_decompression(melspecs)
     decompressed_log10 = torch.log10(decompressed)
     mu = torch.tensor(ckpt['stats']['mu']).unsqueeze(1)
     var = torch.tensor(ckpt['stats']['var']).unsqueeze(1)
     sigma = torch.sqrt(var)
-    decompressed_log10_norm = (decompressed_log10 - mu) / sigma
     melspecs = (decompressed_log10 - mu) / sigma
 
     Generator = getattr(vocoder.models, ckpt['gtype'])
