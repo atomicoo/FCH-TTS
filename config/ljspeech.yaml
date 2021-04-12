@@ -29,6 +29,7 @@ audio:
   reduction_rate: 4
 parallel:
   ground_truth: false
+  standardize: true
   out_channels: *nm  # equal to ${audio.n_mel_channels}
   alphabet_size: !!python/object/apply:eval ['len(ul)', {'ul': *ul}]
   channels: 128

@@ -10,7 +10,7 @@ from scipy.io.wavfile import write
 
 import torch
 from utils.hparams import HParam
-from utils.transform import StandardNorm
+from utils.transform import MinMaxNorm, StandardNorm
 from helpers.synthesizer import Synthesizer
 from vocoder.melgan import Generator
 from datasets.dataset import TextProcessor
@@ -28,6 +28,7 @@ else:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--batch_size", default=8, type=int, help="Batch size")
+    parser.add_argument("--standardize", action='store_true', help="Standardize spectrograms")
     parser.add_argument("--checkpoint", default=None, type=str, help="Checkpoint file path")
     parser.add_argument("--input_texts", default=None, type=str, help="Input text file path")
     parser.add_argument("--outputs_dir", default=None, type=str, help="Output wave file directory")
@@ -45,7 +46,9 @@ if __name__ == '__main__':
     logdir = osp.join(hparams.trainer.logdir, f"%s-%s" % (hparams.data.dataset, args.name))
     checkpoint = args.checkpoint or get_last_chkpt_path(logdir)
 
-    normalizer = StandardNorm(hparams.audio.spec_mean, hparams.audio.spec_std)
+    standardize = True if args.standardize else hparams.parallel.standardize
+    normalizer = StandardNorm(hparams.audio.spec_mean, hparams.audio.spec_std) \
+        if standardize else MinMaxNorm(hparams.audio.spec_min, hparams.audio.spec_max)
     processor = TextProcessor(hparams.text)
     text2mel = ParallelText2Mel(hparams.parallel)
     text2mel.eval()

@@ -280,11 +280,13 @@ class ParallelTrainer(Trainer):
                  warmup_epochs=20,
                  init_scale=0.25,
                  ground_truth=False,
+                 standardize=True,
                  checkpoint=None,
                  device='cuda'
     ):
         self.hparams = hparams
         model = ParallelText2Mel(hparams.parallel)
+        self.ground_truth, self.standardize = ground_truth, standardize
         dataset_root = osp.join(hparams.data.datasets_path, hparams.data.dataset_dir)
         dataset = SpeechDataset(['mels-gt' if ground_truth else 'mels', 'mlens', 'texts', 'tlens', 'drns'],
                                 dataset_root, hparams.text)
@@ -317,7 +319,8 @@ class ParallelTrainer(Trainer):
         train_loader = self.train_dataloader(copy.deepcopy(self.dataset), batch_size=batch_size)
         valid_loader = self.valid_dataloader(copy.deepcopy(self.dataset), batch_size=batch_size)
 
-        self.normalizer = StandardNorm(self.hparams.audio.spec_mean, self.hparams.audio.spec_std)
+        self.normalizer = StandardNorm(self.hparams.audio.spec_mean, self.hparams.audio.spec_std) \
+            if self.standardize else MinMaxNorm(self.hparams.audio.spec_min, self.hparams.audio.spec_max)
 
         for e in range(self.epoch + 1, self.epoch + 1 + epochs):
             self.epoch = e

@@ -1,10 +1,11 @@
 # Projects
-0-*
+000-*
 .vscode/
 datasets/*Speech*
 logdir/
 outputs/
-voienc/
+pretrained/private.*
+vocoder/utils/
 wandb/
 
 # Git

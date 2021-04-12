@@ -29,6 +29,7 @@ audio:
   reduction_rate: 4
 parallel:
   ground_truth: false
+  standardize: true
   out_channels: *nm  # equal to ${audio.n_mel_channels}
   alphabet_size: !!python/object/apply:eval ['len(ul)', {'ul': *ul}]
   channels: 128
@@ -62,7 +63,7 @@ duration:
   enable_augment: true
   noise: 0.01  # 1. add normal noise to input spectrs
   feed_repeat: 2  # 2. Feed spectrograms through the model `feed_repeat` times, use degraded output on input for training
-  feed_ratio: 0.2  # how many items in batch are degraded
+  feed_ratio: 0.1  # how many items in batch are degraded
   replace_ratio: 0.1  # 3. Replace random spectrogram frames with random noise
 melgan:
   checkpoint: 'melgan-epoch0300.pth'
@@ -70,5 +71,5 @@ trainer:
   disable_progress_bar: false
   logdir: './logdir'
 synthesizer:
-  inputs_file_path: './synthesize.txt'
-  outputs_dir: './outputs'
+  inputs_file_path: './outputs/text/synthesize-tb.txt'
+  outputs_dir: './outputs/audio'

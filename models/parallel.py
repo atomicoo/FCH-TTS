@@ -241,6 +241,7 @@ class ParallelText2Mel(nn.Module):
         # use exp(log(durations)) = durations
         if durations is None:
             prd_durans = (round_and_mask(torch.exp(prd_durans), tlens) * alpha).long()
+            prd_durans = prd_durans.clamp(0, 50)  # Avoid too big even inf
             encodings = expand_enc(encodings, prd_durans, mode='duration')
         else:
             encodings = expand_enc(encodings, durations, mode='duration')

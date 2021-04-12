@@ -21,11 +21,12 @@ if __name__ == '__main__':
     parser.add_argument("--batch_size", default=64, type=int, help="Batch size")
     parser.add_argument("--epochs", default=300, type=int, help="Training epochs")
     parser.add_argument("--adam_lr", default=0.002, type=int, help="Initial learning rate for adam")
-    # parser.add_argument("--standardize", default=True, type=bool, help="Standardize spectrograms")
+    parser.add_argument("--standardize", action='store_true', help="Standardize spectrograms")
     parser.add_argument("--ground_truth", action='store_true', help='Ground-truth melspectrogram')
     parser.add_argument("--checkpoint", default=None, type=str, help="Checkpoint file path")
     parser.add_argument("--device", default=None, type=str, help='cuda device or cpu')
     parser.add_argument("--name", default="parallel", type=str, help="Append to logdir name")
+    parser.add_argument("--enable_wandb", action='store_true', help="Enable wandb or not")
     parser.add_argument("--project", default="parallel-speech", type=str, help="Project for wandb")
     parser.add_argument("--entity", default="atomicoo", type=str, help="Entity for wandb")
     parser.add_argument('--config', default=None, type=str, help='Config file path')
@@ -40,14 +41,16 @@ if __name__ == '__main__':
     loggers = Logger(
         hparams.trainer.logdir,
         hparams.data.dataset, args.name,
-        wandb_info=None # {"project": args.project, "entity": args.entity}
+        wandb_info={"project": args.project, "entity": args.entity} if args.enable_wandb else None
     )
 
     ground_truth = True if args.ground_truth else hparams.parallel.ground_truth
+    standardize = True if args.standardize else hparams.parallel.standardize
     trainer = ParallelTrainer(
         hparams=hparams,
         adam_lr=args.adam_lr,
         ground_truth=ground_truth,
+        standardize=standardize,
         device=device
     )
 
