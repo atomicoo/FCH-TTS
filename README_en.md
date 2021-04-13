@@ -6,6 +6,7 @@
 
 ## What's New !
 
+- 2021/04/13 [softdtw](https://github.com/atomicoo/ParallelTTS/tree/softdtw) branch support [SoftDTW](https://arxiv.org/abs/1703.01541) loss!
 - 2021/04/09 [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) branch support [PWG](https://arxiv.org/abs/1910.11480) / [MelGAN](https://arxiv.org/abs/1910.06711) / [Multi-band MelGAN](https://arxiv.org/abs/2005.05106) vocoder!
 - 2021/04/05 Support [ParallelText2Mel](https://github.com/atomicoo/ParallelTTS/blob/main/models/parallel.py) + [MelGAN](https://arxiv.org/abs/1910.06711) vocoder!
 - [ Key Info ]  [Speed indicator](#Speed)，[Samples](https://github.com/atomicoo/ParallelTTS/tree/main/samples/)，[Web Demo](https://github.com/atomicoo/PTTS-WebAPP)，[Communication](#Communication) ......

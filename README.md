@@ -6,6 +6,7 @@
 
 ## 新进展
 
+- 2021/04/13 [softdtw](https://github.com/atomicoo/ParallelTTS/tree/softdtw) 分支 支持使用 [SoftDTW](https://arxiv.org/abs/1703.01541) 损失 训练模型
 - 2021/04/09 [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) 分支 提供 [PWG](https://arxiv.org/abs/1910.11480) / [MelGAN](https://arxiv.org/abs/1910.06711) / [Multi-band MelGAN](https://arxiv.org/abs/2005.05106) 声码器！
 - 2021/04/05 支持 [ParallelText2Mel](https://github.com/atomicoo/ParallelTTS/blob/main/models/parallel.py) + [MelGAN](https://arxiv.org/abs/1910.06711) 声码器！
 - [ 关键信息 ]  [速度指标](#速度指标)，[合成样例](https://github.com/atomicoo/ParallelTTS/tree/main/samples/)，[网页演示](https://github.com/atomicoo/PTTS-WebAPP)，[欢迎交流](#欢迎交流) ……
