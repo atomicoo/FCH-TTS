@@ -6,10 +6,11 @@
 
 ## 新进展
 
-- 2021/04/13 [softdtw](https://github.com/atomicoo/ParallelTTS/tree/softdtw) 分支 支持使用 [SoftDTW](https://arxiv.org/abs/1703.01541) 损失 训练模型
+- 2021/04/13 创建 [encoder](https://github.com/atomicoo/ParallelTTS/tree/encoder) 分支用于开发语音风格迁移模块！
+- 2021/04/13 [softdtw](https://github.com/atomicoo/ParallelTTS/tree/softdtw) 分支 支持使用 [SoftDTW](https://arxiv.org/abs/1703.01541) 损失 训练模型！
 - 2021/04/09 [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) 分支 提供 [PWG](https://arxiv.org/abs/1910.11480) / [MelGAN](https://arxiv.org/abs/1910.06711) / [Multi-band MelGAN](https://arxiv.org/abs/2005.05106) 声码器！
 - 2021/04/05 支持 [ParallelText2Mel](https://github.com/atomicoo/ParallelTTS/blob/main/models/parallel.py) + [MelGAN](https://arxiv.org/abs/1910.06711) 声码器！
-- [ 关键信息 ]  [速度指标](#速度指标)，[合成样例](https://github.com/atomicoo/ParallelTTS/tree/main/samples/)，[网页演示](https://github.com/atomicoo/PTTS-WebAPP)，[欢迎交流](#欢迎交流) ……
+- [ 关键信息 ]  [速度指标](#速度指标)，[合成样例](https://github.com/atomicoo/ParallelTTS/tree/main/samples/)，[网页演示](https://github.com/atomicoo/PTTS-WebAPP)，[一些问题](#一些问题)，[欢迎交流](#欢迎交流) ……
 
 ## 目录结构
 
@@ -126,10 +127,11 @@ $ tensorboard --logdir logdir/[DIR]/
 ## 数据集
 
 - [LJSpeech](https://keithito.com/LJ-Speech-Dataset/)：英语，女性，22050 Hz，约 24 小时
+- [LibriSpeech](https://www.openslr.org/12/)：英语，多说话人（仅使用 [train-clean-100](https://www.openslr.org/resources/12/train-clean-100.tar.gz) 部分），16000 Hz，总计约 1000 小时
 - [JSUT](https://sites.google.com/site/shinnosuketakamichi/publication/jsut)：日语，女性，48000 Hz，约 10 小时
 - [BiaoBei](https://www.data-baker.com/open_source.html)：普通话，女性，48000 Hz，约 12 小时
 - [KSS](https://www.kaggle.com/bryanpark/korean-single-speaker-speech-dataset)：韩语，女性，44100 Hz，约 12 小时
-- [RuLS](https://www.openslr.org/96/)：俄语，多说话人（仅使用单一说话人音频），16000 Hz，约 98 小时
+- [RuLS](https://www.openslr.org/96/)：俄语，多说话人（仅使用单一说话人音频），16000 Hz，总计约 98 小时
 - [TWLSpeech](#)（非公开，质量较差）：藏语，女性（多说话人，音色相近），16000 Hz，约 23 小时
 
 ## 质量评估

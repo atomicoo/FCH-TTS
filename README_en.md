@@ -6,10 +6,11 @@
 
 ## What's New !
 
+- 2021/04/13 create [encoder](https://github.com/atomicoo/ParallelTTS/tree/encoder) branch to dev the speech style transfer module!
 - 2021/04/13 [softdtw](https://github.com/atomicoo/ParallelTTS/tree/softdtw) branch support [SoftDTW](https://arxiv.org/abs/1703.01541) loss!
 - 2021/04/09 [wavegan](https://github.com/atomicoo/ParallelTTS/tree/wavegan) branch support [PWG](https://arxiv.org/abs/1910.11480) / [MelGAN](https://arxiv.org/abs/1910.06711) / [Multi-band MelGAN](https://arxiv.org/abs/2005.05106) vocoder!
 - 2021/04/05 Support [ParallelText2Mel](https://github.com/atomicoo/ParallelTTS/blob/main/models/parallel.py) + [MelGAN](https://arxiv.org/abs/1910.06711) vocoder!
-- [ Key Info ]  [Speed indicator](#Speed)，[Samples](https://github.com/atomicoo/ParallelTTS/tree/main/samples/)，[Web Demo](https://github.com/atomicoo/PTTS-WebAPP)，[Communication](#Communication) ......
+- [ Key Info ]  [Speed Indicator](#Speed), [Samples](https://github.com/atomicoo/ParallelTTS/tree/main/samples/), [Web Demo](https://github.com/atomicoo/PTTS-WebAPP), [Few Issues](#Few Issues), [Communication](#Communication) ......
 
 ## Repo Structure
 
@@ -125,10 +126,11 @@ It is highly recommended to use [Wandb](https://wandb.ai/)（Weights & Biases）
 ## Datasets
 
 - [LJSpeech](https://keithito.com/LJ-Speech-Dataset/): English, Female, 22050 Hz, ~24 h
+- [LibriSpeech](https://www.openslr.org/12/): English, Multi-speakers (only use audios of [train-clean-100](https://www.openslr.org/resources/12/train-clean-100.tar.gz)),16000 Hz，total ~1000 h
 - [JSUT](https://sites.google.com/site/shinnosuketakamichi/publication/jsut): Japanese, Female, 48000 Hz, ~10 h
 - [BiaoBei](https://www.data-baker.com/open_source.html): Mandarin, Female, 48000 Hz, ~12 h
 - [KSS](https://www.kaggle.com/bryanpark/korean-single-speaker-speech-dataset): Korean, Female, 44100 Hz, ~12 h
-- [RuLS](https://www.openslr.org/96/): Russian, Multi-speakers (only use audios of single speaker), 16000 Hz, ~98 h
+- [RuLS](https://www.openslr.org/96/): Russian, Multi-speakers (only use audios of single speaker), 16000 Hz, total ~98 h
 - [TWLSpeech](#) (non-public, poor quality): Tibetan, Female (multi-speakers, sound similar), 16000 Hz，~23 h
 
 ## Quality
