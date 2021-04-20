@@ -12,7 +12,9 @@ import torch
 from utils.hparams import HParam
 from utils.transform import StandardNorm
 from helpers.synthesizer import Synthesizer
-from vocoder_melgan.melgan import Generator
+import vocoder.models
+from vocoder.layers import PQMF
+from utils.audio import dynamic_range_decompression
 from datasets.dataset import TextProcessor
 from models import ParallelText2Mel
 
@@ -70,13 +72,30 @@ if __name__ == '__main__':
     melspecs = synthesizer.inference(texts)
     print(f"Inference {len(texts)} spectrograms, total elapsed {time.time()-since:.3f}s. Done.")
 
-    vocoder = Generator(hparams.audio.n_mel_channels).to(device)
-    vocoder.eval(inference=True)
     vocoder_checkpoint = args.melgan_checkpoint or \
         osp.join(hparams.trainer.logdir, f"{hparams.data.dataset}-melgan", hparams.melgan.checkpoint)
-    vocoder.load_state_dict(torch.load(vocoder_checkpoint, map_location=device))
+    ckpt = torch.load(vocoder_checkpoint, map_location=device)
 
-    waves = vocoder(melspecs).squeeze(1)
+    # Ref: https://github.com/kan-bayashi/ParallelWaveGAN/issues/169
+    decompressed  = dynamic_range_decompression(melspecs)
+    decompressed_log10 = torch.log10(decompressed)
+    mu = torch.tensor(ckpt['stats']['mu']).unsqueeze(1)
+    var = torch.tensor(ckpt['stats']['var']).unsqueeze(1)
+    sigma = torch.sqrt(var)
+    melspecs = (decompressed_log10 - mu) / sigma
+
+    Generator = getattr(vocoder.models, ckpt['gtype'])
+
+    vocoder = Generator(**ckpt['config']).to(device)
+    vocoder.remove_weight_norm()
+    if ckpt['config']['out_channels'] > 1:
+        vocoder.pqmf = PQMF()
+    vocoder.load_state_dict(ckpt['model'])
+
+    if ckpt['config']['out_channels'] > 1:
+        waves = vocoder.pqmf.synthesis(vocoder(melspecs)).squeeze(1)
+    else:
+        waves = vocoder(melspecs).squeeze(1)
     print(f"Generate {len(texts)} audios, total elapsed {time.time()-since:.3f}s. Done.")
 
     print('Saving audio...')

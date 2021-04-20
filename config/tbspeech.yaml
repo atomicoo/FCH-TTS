@@ -4,7 +4,7 @@ data:
   dataset_dir: 'TBSpeech-1.1'
 text:
   graphemes: &gs !!python/object/apply:eval ['list([chr(_) for _ in range(0xf00, 0xf47)]+[chr(_) for _ in range(0xf49, 0xf6c)]+[chr(_) for _ in range(0xf71, 0xf97)]+[chr(_) for _ in range(0xf99, 0xfbc)])']
-  phonemes: &ps !!python/object/apply:eval ['[]']
+  phonemes: &ps !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz")']
   specials: &sp !!python/object/apply:eval ['["<pad>", "<unk>"]']
   punctuations: &pt !!python/object/apply:eval ['[]']
   units_list: &ul !!python/object/apply:eval ['us+sp+pt', {'us': *gs, 'sp': *sp, 'pt': *pt}]

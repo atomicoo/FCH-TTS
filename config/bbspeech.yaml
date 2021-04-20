@@ -3,8 +3,8 @@ data:
   dataset: 'bbspeech'
   dataset_dir: 'BBSpeech-1.0'
 text:
-  graphemes: &gs !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz12345")']
-  phonemes: &ps !!python/object/apply:eval ['[]']
+  graphemes: &gs !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz12345")']  # ['list([chr(_) for _ in range(0x4e00, 0x9fa5)])']
+  phonemes: &ps !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz12345")']
   specials: &sp !!python/object/apply:eval ['["<pad>", "<unk>"]']
   punctuations: &pt !!python/object/apply:eval ['[".", ",", "?", "!", " ", "-"]']
   units_list: &ul !!python/object/apply:eval ['us+sp+pt', {'us': *gs, 'sp': *sp, 'pt': *pt}]
@@ -17,8 +17,8 @@ audio:
   sampling_rate: &sr 24000  # 48000
   segment_length: *sr
   pad_short: 2000
-  mel_fmin: 0.0
-  mel_fmax: 8000.0
+  mel_fmin: 80.0
+  mel_fmax: 7600.0
   # Precomputed statistics for log-mel-spectrs for speech dataset
   spec_mean: -5.419  # -6.344  # for BBSpeech dataset
   spec_std: 2.459  # 2.804  # for BBSpeech dataset

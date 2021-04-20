@@ -4,7 +4,7 @@ data:
   dataset_dir: 'JPSpeech-1.1'
 text:
   graphemes: &gs !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz1234567890")']
-  phonemes: &ps !!python/object/apply:eval ['[]']
+  phonemes: &ps !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz1234567890")']
   specials: &sp !!python/object/apply:eval ['["<pad>", "<unk>"]']
   punctuations: &pt !!python/object/apply:eval ['[".", ",", "?", "!", " ", "-"]']
   units_list: &ul !!python/object/apply:eval ['us+sp+pt', {'us': *gs, 'sp': *sp, 'pt': *pt}]
@@ -14,18 +14,21 @@ audio:
   filter_length: 1024
   hop_length: 256  # WARNING: this can't be changed.
   win_length: 1024
-  sampling_rate: &sr 48000
+  sampling_rate: &sr 24000  # 48000
   segment_length: *sr
   pad_short: 2000
-  mel_fmin: 0.0
-  mel_fmax: 8000.0
+  mel_fmin: 80.0
+  mel_fmax: 7600.0
   # Precomputed statistics for log-mel-spectrs for speech dataset
-  spec_mean: -5.522  # for JPSpeech dataset
-  spec_std: 2.063  # for JPSpeech dataset
-  spec_min: -11.5129  # for JPSpeech dataset
-  spec_max: 2.0584  # for JPSpeech dataset
+  spec_mean: -4.927  # -5.522  # for JPSpeech dataset
+  spec_std: 2.063  # 2.063  # for JPSpeech dataset
+  spec_min: -11.5129  # -11.5129  # for JPSpeech dataset
+  spec_max: 1.7976  # 2.0584  # for JPSpeech dataset
   # Others
-  normalize: false
+  force_frame_rate: false
+  normalize:
+    match_volume: true
+    trim_silence: true
   reduction_rate: 4
 parallel:
   ground_truth: false
@@ -70,5 +73,5 @@ trainer:
   disable_progress_bar: false
   logdir: './logdir'
 synthesizer:
-  inputs_file_path: './samples/text/synthesize-jp.txt'
-  outputs_dir: './samples/audio'
+  inputs_file_path: './outputs/text/synthesize-jp.txt'
+  outputs_dir: './outputs/audio'
