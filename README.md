@@ -79,8 +79,14 @@ $ pip install -r requirements.txt
 **步骤（3）**：合成语音
 
 ```shell
-$ python synthesize.py
+$ python synthesize.py \
+  --checkpoint ./pretrained/ljspeech-parallel-epoch0100.pth \
+  --melgan_checkpoint ljspeech-melgan-epoch3200.pth \
+  --input_texts ./samples/english/synthesize.txt \
+  --outputs_dir ./outputs/
 ```
+
+如果要合成其他语种的语音，需要通过 `--config` 指定相应的配置文件。
 
 ## 如何训练
 
@@ -95,7 +101,7 @@ $ python prepare-dataset.py
 **步骤（2）**：训练对齐模型
 
 ```shell
-$ python train-duration.py 
+$ python train-duration.py
 ```
 
 **步骤（3）**：提取持续时间

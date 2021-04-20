@@ -78,8 +78,14 @@ $ pip install -r requirements.txt
 **Step (3)**：synthesize audio
 
 ```shell
-$ python synthesize.py
+$ python synthesize.py \
+  --checkpoint ./pretrained/ljspeech-parallel-epoch0100.pth \
+  --melgan_checkpoint ljspeech-melgan-epoch3200.pth \
+  --input_texts ./samples/english/synthesize.txt \
+  --outputs_dir ./outputs/
 ```
+
+If synthesizing audio of other languages, you should set config file through `--config`.
 
 ## Training
 
