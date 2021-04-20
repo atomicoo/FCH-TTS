@@ -1,5 +1,15 @@
 #!/usr/bin/env python
-"""Synthetize sentences into speech."""
+# -*- encoding: utf-8 -*-
+'''
+@File    :   train-duration.py
+@Date    :   2021/01/05, Tue
+@Author  :   Atomicoo
+@Version :   1.0
+@Contact :   atomicoo95@gmail.com
+@License :   (C)Copyright 2020-2021, ShiGroup-NLP-XMU
+@Desc    :   Synthetize sentences into speech.
+'''
+
 __author__ = 'Atomicoo'
 
 import argparse

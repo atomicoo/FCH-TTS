@@ -1,13 +1,24 @@
 #!/usr/bin/env python
-"""Download and preprocess datasets. Supported datasets are:
-  * English female: LJSpeech
-  * Mandarin female: BBSpeech (BIAOBEI)
-  * Tibetan female: TBSpeech (Non-public)
-  * Mongolian male: MBSpeech (Mongolian Bible)
-  * Korean female: KSSpeech (Kaggle Korean Single Speech)
-  * Cantonese male: HKSpeech (Common Voice, Hong Kong)
-  * Japanese female: JPSpeech (JSUT Speech Corpus)
-"""
+# -*- encoding: utf-8 -*-
+'''
+@File    :   train-duration.py
+@Date    :   2021/01/05, Tue
+@Author  :   Atomicoo
+@Version :   1.0
+@Contact :   atomicoo95@gmail.com
+@License :   (C)Copyright 2020-2021, ShiGroup-NLP-XMU
+@Desc    :   Download and preprocess datasets. Supported datasets are:
+
+                * English female: LJSpeech
+                * Mandarin female: BBSpeech (BIAOBEI)
+                * Tibetan female: TBSpeech (Non-public)
+                * Mongolian male: MBSpeech (Mongolian Bible)
+                * Korean female: KSSpeech (Kaggle Korean Single Speech)
+                * Cantonese male: HKSpeech (Common Voice, Hong Kong)
+                * Japanese female: JPSpeech (JSUT Speech Corpus)
+
+'''
+
 __author__ = 'Atomicoo'
 
 import sys

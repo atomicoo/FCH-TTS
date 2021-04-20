@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+'''
+@File    :   train-duration.py
+@Date    :   2021/01/05, Tue
+@Author  :   Atomicoo
+@Version :   1.0
+@Contact :   atomicoo95@gmail.com
+@License :   (C)Copyright 2020-2021, ShiGroup-NLP-XMU
+@Desc    :   Training parallel model.
+'''
+
+__author__ = 'Atomicoo'
+
 import argparse
 import os
 import os.path as osp

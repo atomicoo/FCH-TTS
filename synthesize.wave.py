@@ -1,5 +1,15 @@
 #!/usr/bin/env python
-"""Synthetize sentences into speech."""
+# -*- encoding: utf-8 -*-
+'''
+@File    :   train-duration.py
+@Date    :   2021/01/05, Tue
+@Author  :   Atomicoo
+@Version :   1.0
+@Contact :   atomicoo95@gmail.com
+@License :   (C)Copyright 2020-2021, ShiGroup-NLP-XMU
+@Desc    :   Synthetize sentences into speech.
+'''
+
 __author__ = 'Atomicoo'
 
 import argparse
@@ -79,8 +89,8 @@ if __name__ == '__main__':
     # Ref: https://github.com/kan-bayashi/ParallelWaveGAN/issues/169
     decompressed  = dynamic_range_decompression(melspecs)
     decompressed_log10 = torch.log10(decompressed)
-    mu = torch.tensor(ckpt['stats']['mu']).unsqueeze(1)
-    var = torch.tensor(ckpt['stats']['var']).unsqueeze(1)
+    mu = torch.tensor(ckpt['stats']['mu']).to(device).unsqueeze(1)
+    var = torch.tensor(ckpt['stats']['var']).to(device).unsqueeze(1)
     sigma = torch.sqrt(var)
     melspecs = (decompressed_log10 - mu) / sigma
 
@@ -89,7 +99,7 @@ if __name__ == '__main__':
     vocoder = Generator(**ckpt['config']).to(device)
     vocoder.remove_weight_norm()
     if ckpt['config']['out_channels'] > 1:
-        vocoder.pqmf = PQMF()
+        vocoder.pqmf = PQMF().to(device)
     vocoder.load_state_dict(ckpt['model'])
 
     if ckpt['config']['out_channels'] > 1:

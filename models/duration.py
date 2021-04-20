@@ -1,12 +1,4 @@
-"""
-Hideyuki Tachibana, Katsuya Uenoyama, Shunsuke Aihara
-Efficiently Trainable Text-to-Speech System Based on Deep Convolutional Networks with Guided Attention
-https://arxiv.org/abs/1710.08969
-
-Text2Mel Network. Based on the code of Erdene-Ochir Tuguldur.
-"""
-__author__ = 'Atomicoo'
-__all__ = ['DurationExtractor']
+__all__ = [ 'DurationExtractor' ]
 
 import numpy as np
 

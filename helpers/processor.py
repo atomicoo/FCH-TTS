@@ -1,7 +1,7 @@
-import sys
+__author__ = 'Atomicoo'
+
 import os
 import os.path as osp
-import time
 import math
 from tqdm import tqdm
 
@@ -12,7 +12,6 @@ import torch.nn.functional as F
 import librosa
 from pydub import AudioSegment
 from utils.stft import MySTFT
-from utils.transform import MinMaxNorm, StandardNorm
 
 
 def read_audio_from_file(path, format=None):

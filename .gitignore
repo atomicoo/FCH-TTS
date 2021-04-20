@@ -1,6 +1,4 @@
 # Projects
-000-*
-*.out
 .vscode/
 datasets/*Speech*
 logdir/
@@ -8,10 +6,11 @@ outputs/
 pretrained/private.*
 vocoder/utils/
 wandb/
+000-*
+*.out
 
 # Git
 .git/
-.gitignore
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

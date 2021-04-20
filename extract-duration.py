@@ -1,5 +1,15 @@
 #!/usr/bin/env python
-"""Prepare the alignment of audio with a Text2Mel teacher model."""
+# -*- encoding: utf-8 -*-
+'''
+@File    :   train-duration.py
+@Date    :   2021/01/05, Tue
+@Author  :   Atomicoo
+@Version :   1.0
+@Contact :   atomicoo95@gmail.com
+@License :   (C)Copyright 2020-2021, ShiGroup-NLP-XMU
+@Desc    :   Prepare the alignment of audio with a Text2Mel teacher model.
+'''
+
 __author__ = 'Atomicoo'
 
 import sys

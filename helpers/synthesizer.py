@@ -1,3 +1,6 @@
+"""Wrapper synthesizer class for synthesizing audio."""
+__author__ = 'Atomicoo'
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -5,7 +8,6 @@ import torch
 import torch.nn as nn
 
 from utils.functional import mask
-from utils.utils import get_last_chkpt_path
 
 
 class Synthesizer:
