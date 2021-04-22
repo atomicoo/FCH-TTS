@@ -27,14 +27,14 @@ def plot_alignment(alignment, title=None, split_title=False, max_len=None,
         origin='lower',
         interpolation='none')
     fig.colorbar(im, ax=ax)
-    xlabel = 'Decoder timestep'
+    xlabel = 'Encoder timestep'
 
     if split_title:
         title = split_title_line(title)
 
     plt.xlabel(xlabel)
     plt.title(title)
-    plt.ylabel('Encoder timestep')
+    plt.ylabel('Decoder timestep')
     plt.tight_layout()
     if save_img:
         assert path is not None, "The 'path' must be not None when 'save_img' is True."

@@ -1,34 +1,34 @@
 data:
   datasets_path: './datasets'
-  dataset: 'ljspeech'
-  dataset_dir: 'LJSpeech-1.1'
+  dataset: 'kzspeech'
+  dataset_dir: 'KZSpeech-1.1'
 text:
-  graphemes: &gs !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz")']
-  phonemes: &ps !!python/object/apply:eval ['["AA0","AA1","AA2","AE0","AE1","AE2","AH0","AH1","AH2","AO0","AO1","AO2","AW0","AW1","AW2","AY0","AY1","AY2","B","CH","D","DH","EH0","EH1","EH2","ER0","ER1","ER2","EY0","EY1","EY2","F","G","HH","IH0","IH1","IH2","IY0","IY1","IY2","JH","K","L","M","N","NG","OW0","OW1","OW2","OY0","OY1","OY2","P","R","S","SH","T","TH","UH0","UH1","UH2","UW","UW0","UW1","UW2","V","W","Y","Z","ZH"]']
+  graphemes: &gs !!python/object/apply:eval ['list("аәбвгғдеёжзийкқлмнңоөпрстуүұфхһцчшщъыіьэюя")']
+  phonemes: &ps !!python/object/apply:eval ['list("abcdefghijklmnopqrstuvwxyz")']
   specials: &sp !!python/object/apply:eval ['["<pad>", "<unk>"]']
   punctuations: &pt !!python/object/apply:eval ['[".", ",", "?", "!", " ", "-"]']
-  units_list: &ul !!python/object/apply:eval ['us+sp+pt', {'us': *ps, 'sp': *sp, 'pt': *pt}]
-  use_phonemes: &up true
+  units_list: &ul !!python/object/apply:eval ['us+sp+pt', {'us': *gs, 'sp': *sp, 'pt': *pt}]
+  use_phonemes: &up false
 audio:
   n_mel_channels: &nm 80
   filter_length: 1024
   hop_length: 256  # WARNING: this can't be changed.
   win_length: 1024
-  sampling_rate: &sr 22050
+  sampling_rate: &sr 16000
   segment_length: *sr
   pad_short: 2000
   mel_fmin: 0.0
   mel_fmax: 8000.0
   # Precomputed statistics for log-mel-spectrs for speech dataset
-  spec_mean: -5.522  # for LJSpeech dataset
-  spec_std: 2.063  # for LJSpeech dataset
-  spec_min: -11.5129  # for LJSpeech dataset
-  spec_max: 2.0584  # for LJSpeech dataset
+  spec_mean: -4.672  # for KZSpeech dataset
+  spec_std: 2.319  # for KZSpeech dataset
+  spec_min: -11.5129  # for KZSpeech dataset
+  spec_max: 2.1967  # for KZSpeech dataset
   # Others
   force_frame_rate: true  # force match sampling rate
   normalize: 
-    match_volume: false
-    trim_silence: false
+    match_volume: true
+    trim_silence: true
   reduction_rate: 4
 parallel:
   ground_truth: false
@@ -62,7 +62,7 @@ duration:
   att_hidden_channels: 80
   pos_mode: 'duration'  # 'standard', 'duration'
   # Spectrogram augmentation options
-  enable_augment: true
+  enable_augment: false
   noise: 0.01  # 1. add normal noise to input spectrs
   feed_repeat: 2  # 2. Feed spectrograms through the model `feed_repeat` times, use degraded output on input for training
   feed_ratio: 0.5  # how many items in batch are degraded
@@ -73,5 +73,5 @@ trainer:
   disable_progress_bar: false
   logdir: './logdir'
 synthesizer:
-  inputs_file_path: './outputs/text/synthesize.txt'
+  inputs_file_path: './outputs/text/synthesize-kz.txt'
   outputs_dir: './outputs/audio'
