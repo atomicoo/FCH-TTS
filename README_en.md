@@ -184,6 +184,4 @@ Attention, no multiple tests, for reference only.
 
 ## Communication
 
-- VX: YcZhouZy
-
-- QQ: 793071559
+- E-mail: atomicoo95@gmail.com
