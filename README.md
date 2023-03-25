@@ -185,6 +185,4 @@ TODO：待补充
 
 ## 欢迎交流
 
-- 微信号：YcZhouZy
-
-- 企鹅号：793071559
+- 邮箱：atomicoo95@gmail.com
